@@ -1,0 +1,205 @@
+Executar em caso de problemas de execução do projeto:    
+
+    Caso necessário, verificar o IP do computador pelo terminal com o comando:
+    ipconfig
+
+    Anotar o IP de rede e navegar no terminal até a pasta
+    c:\windows\system32
+
+    Executar o comando:
+    setx /M REACT_NATIVE_PACKAGER_HOSTNAME <ip>
+
+
+
+Iniciando o projeto
+npx create-expo-app rooster-interest
+cd rooster-interest
+npm i @react-navigation/native
+npm i @react-navigation/bottom-tabs
+
+
+Clique para criar um arquivo e digite: src\app\(tabs)\HomeScreen\index.js:
+import React from 'react';
+import { View, Text, StyleSheet } from 'react-native';
+
+export default function HomeScreen() {
+  return (
+    <View style={styles.container}>
+      <Text style={styles.text}>Home</Text>
+    </View>
+  )
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  text: {
+    fontSize: 22,
+  }
+});
+
+
+
+Abrir e alterar o arquivo App.js:
+import * as React from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+
+import HomeScreen from './src/app/(tabs)/HomeScreen';
+
+const Tab = createBottomTabNavigator();
+
+export default function App() {
+  return (
+    <NavigationContainer>
+      <Tab.Navigator>
+        <Tab.Screen name="Home" component={HomeScreen} />
+      </Tab.Navigator>
+    </NavigationContainer>
+  );
+}
+
+
+
+Criar dentro da pasta src uma pasta theme e na pasta um arquivo colors.js:
+export const colors = {
+    white: "#FFFFFF",
+    black: "#000000",
+    gray: {
+        800: "#292929",
+        700: "#4B4B4B",
+        600: "#8E8E8E",
+    }
+}
+
+
+
+Criar em theme um arquivo index.js:
+import { colors } from "./colors";
+
+export const theme = {
+    colors,
+}
+
+
+
+Altere o (tabs)\index.js:
+import { StatusBar } from 'expo-status-bar';
+import { View, Text, StyleSheet } from 'react-native';
+
+import { theme } from '../../../theme';
+
+export default function HomeScreen() {
+  return (
+    <View style={styles.container}>
+      <Text style={{ color: theme.colors.white }}>Home</Text>
+      <StatusBar style="auto" />
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: theme.colors.black,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+});
+
+
+
+Executar no terminal:
+npx expo install expo-font @expo-google-fonts/roboto
+
+npx expo install react-native-gesture-handler react-native-reanimated
+
+npm install -D @babel/plugin-transform-export-namespace-from 
+
+npx expo install expo-router react-native-safe-area-context react-native-screens expo-linking expo-constants expo-status-bar
+
+
+
+Alterar o arquivo babel.config.js:
+module.exports = function (api) {
+  api.cache(true);
+  return {
+    presets: ['babel-preset-expo'],
+    plugins: [
+      "@babel/plugin-transform-export-namespace-from",
+      "react-native-reanimated/plugin",
+    ],
+  };
+};
+
+
+package.json:
+{
+  "main": "expo-router/entry"
+}
+
+
+app.config:
+{
+  "scheme": "your-app-scheme"
+}
+
+
+
+Criar na pasta app o arquivo _layout.js:
+import { Slot } from "expo-router";
+import { StatusBar } from "react-native";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+
+import {
+    useFonts,
+    Roboto_400Regular,
+    Roboto_500Medium,
+    Roboto_700Bold
+} from "@expo-google-fonts/roboto";
+
+export default function Layout() {
+    useFonts({
+        Roboto_400Regular,
+        Roboto_500Medium,
+        Roboto_700Bold
+    })
+    
+    return (
+        <GestureHandlerRootView style={{ flex: 1}}>
+            <StatusBar barStyle="light-content" />
+            <Slot />
+        </GestureHandlerRootView>
+    )
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+npx expo start -c
+
+
+
+
+
+
+
+
+
+npx expo install expo-router react-native-safe-area-context react-native-screens expo-linking expo-constants expo-status-bar
+
+
