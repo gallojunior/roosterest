@@ -1,11 +1,12 @@
+import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 
-import { theme } from '../theme';
+import { theme } from '../../theme';
 
-export default function HomeScreen() {
+export default function Messages() {
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>Home</Text>
+      <Text style={styles.text}>Messages</Text>
     </View>
   );
 }
@@ -18,7 +19,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   text: {
-    fontSize: 24,
     color: theme.colors.white,
+    fontSize: 24,
+    fontFamily: theme.fontFamily.bold
   }
 });

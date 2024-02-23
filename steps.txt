@@ -10,19 +10,37 @@ Executar em caso de problemas de execução do projeto:
     setx /M REACT_NATIVE_PACKAGER_HOSTNAME <ip>
 
 
+https://docs.expo.dev/develop/user-interface/splash-screen/#make-a-splash-image
+
 
 Iniciando o projeto
 npx create-expo-app rooster-interest
 cd rooster-interest
 npm i @react-navigation/native
 npm i @react-navigation/bottom-tabs
+npx expo install expo-router react-native-safe-area-context react-native-screens expo-linking expo-constants expo-status-bar
 
 
-Clique para criar um arquivo e digite: src\app\(tabs)\HomeScreen\index.js:
+
+package.json:
+{
+  "main": "expo-router/entry"
+}
+
+
+
+app.config:
+{
+  "scheme": "rooster-scheme"
+}
+
+
+
+Clique para criar um arquivo e digite: src\app\(tabs)\index.js:
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 
-export default function HomeScreen() {
+export default function Home() {
   return (
     <View style={styles.container}>
       <Text style={styles.text}>Home</Text>
@@ -44,24 +62,20 @@ const styles = StyleSheet.create({
 
 
 
-Abrir e alterar o arquivo App.js:
-import * as React from 'react';
-import { NavigationContainer } from '@react-navigation/native';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+Alterar o arquivo splash.png da pasta assets
 
-import HomeScreen from './src/app/(tabs)/HomeScreen';
 
-const Tab = createBottomTabNavigator();
 
-export default function App() {
-  return (
-    <NavigationContainer>
-      <Tab.Navigator>
-        <Tab.Screen name="Home" component={HomeScreen} />
-      </Tab.Navigator>
-    </NavigationContainer>
-  );
-}
+Alterar no arquivo app.json:
+  "backgroundColor": "#000000"
+
+
+
+npx expo start --localhost --android
+
+
+
+Apagar o arquivo App.js
 
 
 
@@ -78,25 +92,37 @@ export const colors = {
 
 
 
+Criar na pasta theme um arquivo fontFamily.js:
+export const fontFamily = {
+    regular: "",
+    medium: "",
+    bold: "",
+}
+
+
+
 Criar em theme um arquivo index.js:
 import { colors } from "./colors";
+import { fontFamily } from "./fontFamily";
 
 export const theme = {
     colors,
+    fontFamily,
 }
 
 
 
 Altere o (tabs)\index.js:
+import React from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { View, Text, StyleSheet } from 'react-native';
 
-import { theme } from '../../../theme';
+import { theme } from '../../theme';
 
-export default function HomeScreen() {
+export default function Home() {
   return (
     <View style={styles.container}>
-      <Text style={{ color: theme.colors.white }}>Home</Text>
+      <Text style={styles.text}>Home</Text>
       <StatusBar style="auto" />
     </View>
   );
@@ -109,18 +135,24 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  text: {
+    color: theme.colors.white,
+    fontSize: 24
+  }
 });
 
 
 
-Executar no terminal:
+Verificar as alterações em execução
+
+
+
+Pare a execução do projeto (Ctrl + C) e execute no terminal:
 npx expo install expo-font @expo-google-fonts/roboto
 
 npx expo install react-native-gesture-handler react-native-reanimated
 
-npm install -D @babel/plugin-transform-export-namespace-from 
-
-npx expo install expo-router react-native-safe-area-context react-native-screens expo-linking expo-constants expo-status-bar
+npm install -D @babel/plugin-transform-export-namespace-from
 
 
 
@@ -137,23 +169,12 @@ module.exports = function (api) {
 };
 
 
-package.json:
-{
-  "main": "expo-router/entry"
-}
 
-
-app.config:
-{
-  "scheme": "your-app-scheme"
-}
-
-
-
-Criar na pasta app o arquivo _layout.js:
+Criar um arquivo _layout.js na pasta app:
 import { Slot } from "expo-router";
 import { StatusBar } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import * as SplashScreen from "expo-splash-screen";
 
 import {
     useFonts,
@@ -162,19 +183,149 @@ import {
     Roboto_700Bold
 } from "@expo-google-fonts/roboto";
 
+SplashScreen.preventAutoHideAsync();
+
 export default function Layout() {
-    useFonts({
+    const [fontsLoaded] = useFonts({
         Roboto_400Regular,
         Roboto_500Medium,
         Roboto_700Bold
     })
+
+    if (fontsLoaded) {
+        SplashScreen.hideAsync();
+    }
     
     return (
         <GestureHandlerRootView style={{ flex: 1}}>
             <StatusBar barStyle="light-content" />
-            <Slot />
+            {fontsLoaded && <Slot /> }
         </GestureHandlerRootView>
     )
+}
+
+
+
+Atualizar o código do arquivo fontFamily.cs:
+export const fontFamily = {
+    regular: "Roboto_400Regular",
+    medium: "Roboto_500Medium",
+    bold: "Roboto_700Bold",
+}
+
+
+
+Altere a fontFamily do text da index.js do tabs para ver no aplicativo a diferença
+
+
+
+Copiar o arquivo (tabs)\index.js 3 vezes, renomeando as cópias o nome das funções e componente Text para:
+  Arquivo:          Funções e Text
+  messages.js       Messages
+  profile.js        Profile
+  search.js         Search
+
+
+
+Criar um arquivo _layout.js na pasta (tabs):
+import { Tabs } from "expo-router";
+
+export default function TabLayout() {
+ return (
+   <Tabs screenOptions={{ headerShown: false }}>
+        <Tabs.Screen name="index" />
+        <Tabs.Screen name="search" />
+        <Tabs.Screen name="messages" />
+        <Tabs.Screen name="profile" />
+    </Tabs>
+  );
+}
+
+
+
+Ver funcionamento
+
+
+
+Alterar o arquivo _layout.js da pasta (tabs):
+import { Tabs } from "expo-router";
+import { Foundation, Ionicons } from "@expo/vector-icons";
+
+export default function TabLayout() {
+  return (
+    <Tabs screenOptions={{ headerShown: false, tabBarShowLabel: false }}>
+      <Tabs.Screen
+        name="index"
+        options={{
+          tabBarIcon: ({ size, color }) => <Foundation name="home" size={size} color={color} />
+        }}
+      />
+      <Tabs.Screen
+        name="search"
+        options={{
+          tabBarIcon: ({ size, color }) => <Ionicons name="search" size={size} color={color} />
+        }}
+      />
+      <Tabs.Screen
+        name="messages"
+        options={{
+          tabBarIcon: ({ size, color }) => <Ionicons name="chatbubble-ellipses" size={size} color={color} />
+        }}
+      />
+      <Tabs.Screen
+        name="profile"
+      />
+    </Tabs>
+  );
+}
+
+
+
+Ver funcionamento
+
+
+
+Alterar o arquivo _layout.js da pasta (tabs):
+import { Tabs } from "expo-router";
+import { Ionicons } from "@expo/vector-icons";
+
+import { theme } from '../../theme';
+
+export default function TabLayout() {
+  return (
+    <Tabs screenOptions={{
+      headerShown: false,
+      tabBarShowLabel: false,
+      tabBarActiveTintColor: theme.colors.white,
+      tabBarInactiveTintColor: theme.colors.gray[700],
+      tabBarStyle: {
+        backgroundColor: theme.colors.black,
+        borderColor: theme.colors.black,
+      }
+    }}>
+      <Tabs.Screen
+        name="index"
+        options={{
+          tabBarIcon: ({ size, color }) => <Ionicons name="home" size={size} color={color} />
+        }}
+      />
+      <Tabs.Screen
+        name="search"
+        options={{
+          tabBarIcon: ({ size, color }) => <Ionicons name="search" size={size} color={color} />
+        }}
+      />
+      <Tabs.Screen
+        name="messages"
+        options={{
+          tabBarIcon: ({ size, color }) => <Ionicons name="chatbubble-ellipses" size={size} color={color} />
+        }}
+      />
+      <Tabs.Screen
+        name="profile"
+      />
+    </Tabs>
+  );
 }
 
 
@@ -182,24 +333,5 @@ export default function Layout() {
 
 
 
-
-
-
-
-
-
-
-
-npx expo start -c
-
-
-
-
-
-
-
-
-
-npx expo install expo-router react-native-safe-area-context react-native-screens expo-linking expo-constants expo-status-bar
 
 
