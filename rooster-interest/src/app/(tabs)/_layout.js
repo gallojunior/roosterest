@@ -2,6 +2,7 @@ import { Tabs } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 
 import { theme } from '../../theme';
+import Avatar from "../../components/Avatar";
 
 export default function TabLayout() {
   return (
@@ -35,6 +36,11 @@ export default function TabLayout() {
       />
       <Tabs.Screen
         name="profile"
+        options={{
+          tabBarIcon: () => (
+            <Avatar imageUrl="https://github.com/gallojunior.png"/>
+          )
+        }}
       />
     </Tabs>
   );
