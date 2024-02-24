@@ -368,6 +368,55 @@ Alterar o código da tab de Profile no arquivo (tabs)\_layout.js (Não esquecer 
 
 
 
+Para estilizar o avatar:
+styles.js:
+import { StyleSheet } from 'react-native';
+import { theme } from '../../theme';
+
+export const styles = StyleSheet.create({
+  image: {
+    width: 30,
+    height: 30,
+    borderRadius: 25,
+  },
+  selected: {
+    borderWidth: 3,
+    borderColor: theme.colors.white,
+  }
+});
+
+
+
+index.js:
+import { Image } from 'react-native';
+import { styles } from './styles';
+
+export default function Avatar({ selected, imageUrl }) {
+  const imageSource = imageUrl ? { uri: imageUrl } : require('../../../assets/icon.png');
+  return (
+    <Image
+      style={[styles.image, selected && styles.selected]}
+      source={imageSource}
+    />
+  )
+}
+
+
+      <Tabs.Screen
+        name="profile"
+        options={{
+          tabBarIcon: ({ color }) => (
+            <Avatar
+              selected={color == theme.colors.white}
+              imageUrl="https://github.com/gallojunior.png"
+            />
+          )
+        }}
+      />
+
+
+
+
 
 
 
