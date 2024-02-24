@@ -369,7 +369,7 @@ Alterar o código da tab de Profile no arquivo (tabs)\_layout.js (Não esquecer 
 
 
 Para estilizar o avatar:
-styles.js:
+Avatar\styles.js:
 import { StyleSheet } from 'react-native';
 import { theme } from '../../theme';
 
@@ -387,7 +387,7 @@ export const styles = StyleSheet.create({
 
 
 
-index.js:
+Avatar\index.js:
 import { Image } from 'react-native';
 import { styles } from './styles';
 
@@ -402,22 +402,262 @@ export default function Avatar({ selected, imageUrl }) {
 }
 
 
-      <Tabs.Screen
-        name="profile"
-        options={{
-          tabBarIcon: ({ color }) => (
-            <Avatar
-              selected={color == theme.colors.white}
-              imageUrl="https://github.com/gallojunior.png"
-            />
-          )
-        }}
+(tabs)\_layout.js:
+  <Tabs.Screen
+    name="profile"
+    options={{
+      tabBarIcon: ({ color }) => (
+        <Avatar
+          selected={color == theme.colors.white}
+          imageUrl="https://github.com/gallojunior.png"
+        />
+      )
+    }}
+  />
+
+
+
+Verificar funcionamento
+
+
+
+Criar na pasta components um arquivo Filter/index.js:
+import React from 'react'
+import { View, Text, Pressable } from 'react-native'
+
+
+export default function Filter({ title, selected }) {
+  return <Pressable>
+    <Text>{title}</Text>
+  </Pressable>
+}
+
+
+
+Criar na pasta Filter um arquivo styles.js:
+import { StyleSheet } from 'react-native';
+import { theme } from '../../theme';
+
+export const styles = StyleSheet.create({
+  container: {}
+});
+
+
+
+Alterar (tabs)\index.js:
+import React from 'react';
+import { View, StyleSheet } from 'react-native';
+
+import { theme } from '../../theme';
+import Filter from '../../components/Filter';
+
+export default function Home() {
+  return (
+    <View style={styles.container}>
+      <Filter title={"Todos"} selected={true}/>
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: theme.colors.black,
+    padding: 12,
+    paddingTop: 52,
+  },
+});
+
+
+
+Ver funcionamento
+
+
+
+Alterar no componente Filter/styles.js:
+import { StyleSheet } from 'react-native';
+import { theme } from '../../theme';
+
+export const styles = StyleSheet.create({
+  pressable: {
+
+  },
+  text: {
+    color: theme.colors.white,
+    fontSize: 16,
+    fontFamily: theme.fontFamily.medium,
+  },
+  selected: {
+    borderBottomWidth: 4,
+    borderBottomColor: theme.colors.white
+  }
+});
+
+
+
+Alterar no componente Filter/index.js:
+import React from 'react'
+import { View, Text, Pressable } from 'react-native'
+
+import { styles } from './styles';
+
+export default function Filter({ title, selected }) {
+  return <Pressable style={[styles.pressable, styles.selected]}>
+    <Text style={styles.text}>{title}</Text>
+  </Pressable>
+}
+
+
+
+Ver funcionamento
+
+
+
+Criar na pasta src um arquivo utils/filters.js:
+export const FILTERS = [
+    "Tudo",
+    "UI Clone",
+    "Setup",
+    "Gamer",
+    "Escritório",
+    "Casa",
+    "Mobile",
+    "Inspirações",
+    "Interfaces"
+]
+
+
+
+Criar na pasta components um arquivo Filters/index.js:
+import React from 'react';
+import { FlatList } from 'react-native';
+
+import { FILTERS } from '../../utils/filters';
+import Filter from '../Filter';
+
+export default function Filters() {
+  return <FlatList
+    data={FILTERS}
+    keyExtractor={item => item}
+    renderItem={({item}) => <Filter title={item} />}
+  />
+}
+
+
+
+Alterar (tabs)\index.js:
+import React from 'react';
+import { View, StyleSheet } from 'react-native';
+
+import { theme } from '../../theme';
+import Filters from '../../components/Filters';
+
+export default function Home() {
+  return (
+    <View style={styles.container}>
+      <Filters/>
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: theme.colors.black,
+    padding: 12,
+    paddingTop: 52,
+  },
+});
+
+
+
+Ver funcionamento
+
+
+
+Criar na pasta Filters um arquivo styles.js:
+import { StyleSheet } from 'react-native';
+
+export const styles = StyleSheet.create({
+    list: {
+        paddingBottom: 4,
+        maxHeight: 35,
+    },
+    content: {
+        gap: 24,
+        paddingHorizontal: 8,
+    }
+});
+
+
+
+Alterar o arquivo (tabs)\index.js:
+import React, { useState } from 'react';
+import { View, StyleSheet } from 'react-native';
+
+import { theme } from '../../theme';
+import Filters from '../../components/Filters';
+import { FILTERS } from '../../utils/filters';
+
+export default function Home() {
+  const [filter, setFilter] = useState(FILTERS[0]);
+
+  return (
+    <View style={styles.container}>
+      <Filters filters={FILTERS} selected={filter} onChange={setFilter} />
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: theme.colors.black,
+    padding: 12,
+    paddingTop: 52,
+  },
+});
+
+
+
+Alterar o arquivo Filters\index.js:
+import React from 'react';
+import { FlatList } from 'react-native';
+
+import { styles } from './styles';
+import Filter from '../Filter';
+
+export default function Filters({ filters, selected, onChange }) {
+  return <FlatList
+    data={filters}
+    keyExtractor={item => item}
+    renderItem={({ item }) => (
+      <Filter
+        title={item}
+        selected={item == selected}
+        onPress={() => onChange(item)}
       />
+    )}
+    horizontal
+    style={styles.list}
+    showsHorizontalScrollIndicator={false}
+    contentContainerStyle={styles.content}
+  />
+}
 
 
 
+Alterar o arquivo Filter\index.js:
+import React from 'react'
+import { View, Text, Pressable } from 'react-native'
 
+import { styles } from './styles';
 
+export default function Filter({ title, selected, onPress }) {
+  return <Pressable style={[styles.pressable, selected && styles.selected]} onPress={onPress}>
+    <Text style={styles.text}>{title}</Text>
+  </Pressable>
+}
 
 
 
