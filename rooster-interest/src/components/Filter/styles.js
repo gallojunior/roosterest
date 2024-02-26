@@ -3,7 +3,7 @@ import { theme } from '../../theme';
 
 export const styles = StyleSheet.create({
   pressable: {
-
+    paddingBottom: 5
   },
   text: {
     color: theme.colors.white,
