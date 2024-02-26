@@ -897,3 +897,192 @@ export const Menu = forwardRef(function Menu(props, ref) {
 });
 
 
+
+Ver funcionamento
+
+
+
+Alterar o arquivo Menu\index.js:
+import { forwardRef } from 'react';
+import { View, Text } from 'react-native';
+import BottomSheet from '@gorhom/bottom-sheet';
+import { FontAwesome } from "@expo/vector-icons";
+
+import { styles } from './styles';
+
+export const Menu = forwardRef(function Menu(props, ref) {
+  const { onClose, ...otherProps } = props;
+  return (
+    <BottomSheet
+      ref={ref}
+      index={0}
+      snapPoints={[0.01, 230]}
+      backgroundStyle={styles.container}
+      handleComponent={() => null}
+    >
+      <View style={styles.content}>
+        <View style={styles.header}>
+          <Text style={styles.title}>Comece a criar agora</Text>
+          <FontAwesome name="close" size={24} onPress={onClose} style={styles.close}/>
+        </View>
+      </View>
+    </BottomSheet>
+  )
+});
+
+
+
+Criar na pasta Menu um arquivo styles.js:
+import { StyleSheet } from 'react-native';
+import { theme } from '../../theme';
+
+export const styles = StyleSheet.create({
+  container: {
+    backgroundColor: theme.colors.gray[800],
+  },
+  content: {
+    flex: 1,
+    padding: 24,
+    alignItems: 'center',
+  },
+  header: {
+    flexDirection: "row",
+  },
+  title: {
+    fontSize: 18,
+    fontFamily: theme.fontFamily.medium,
+    color: theme.colors.white,
+    flex: 1,
+    textAlign: 'center',
+    marginLeft: 24
+  },
+  close: {
+    color: theme.colors.white,
+  }
+});
+
+
+
+Ver funcionamento
+
+
+
+Criar na pasta components um arquivo MenuButton/index.js:
+import { Pressable, View, Text } from 'react-native';
+import { FontAwesome } from "@expo/vector-icons";
+
+import { styles } from './styles';
+
+export function MenuButton({ title, icon, onClick }) {
+  return (
+    <Pressable style={styles.container} onPress={onClick}>
+      <View style={styles.boxIcon}>
+        <FontAwesome name={icon} style={styles.icon} />
+      </View>
+      <Text style={styles.text}>{title}</Text>
+    </Pressable>
+  );
+}
+
+
+
+Criar na pasta MenuButton um arquivo styles.js:
+import { StyleSheet } from 'react-native';
+import { theme } from '../../theme';
+
+export const styles = StyleSheet.create({
+  container: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  boxIcon: {
+    backgroundColor: theme.colors.gray[700],
+    padding: 24,
+    borderRadius: 22,
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: 85,
+  },
+  icon: {
+    color: theme.colors.white,
+    fontSize: 32,
+  },
+  text: {
+    color: theme.colors.white,
+    fontSize: 14,
+    fontFamily: theme.fontFamily.medium,
+    marginTop: 10,
+  },
+})
+
+
+
+Alterar na pasta Menu o arquivo index.js:
+import { forwardRef } from 'react';
+import { View, Text } from 'react-native';
+import BottomSheet from '@gorhom/bottom-sheet';
+import { FontAwesome } from "@expo/vector-icons";
+
+import { styles } from './styles';
+import { MenuButton } from '../MenuButton';
+
+export const Menu = forwardRef(function Menu(props, ref) {
+  const { onClose, ...otherProps } = props;
+  return (
+    <BottomSheet
+      ref={ref}
+      index={0}
+      snapPoints={[0.01, 230]}
+      backgroundStyle={styles.container}
+      handleComponent={() => null}
+    >
+      <View style={styles.content}>
+        <View style={styles.header}>
+          <Text style={styles.title}>Comece a criar agora</Text>
+          <FontAwesome name="close" size={24} onPress={onClose} style={styles.close}/>
+        </View>
+        <View style={styles.options}>
+          <MenuButton title="Pin" icon="thumb-tack" onClick={() => console.info("Pin")} />
+          <MenuButton title="Colagem" icon="paste" onClick={() => console.info("Colagem")}/>
+          <MenuButton title="Pasta" icon="folder" onClick={() => console.info("Pasta")}/>
+        </View>
+      </View>
+    </BottomSheet>
+  )
+});
+
+
+
+Alterar na pasta Menu o arquivo styles.js:
+import { StyleSheet } from 'react-native';
+import { theme } from '../../theme';
+
+export const styles = StyleSheet.create({
+  container: {
+    backgroundColor: theme.colors.gray[800],
+  },
+  content: {
+    flex: 1,
+    padding: 24,
+    alignItems: 'center',
+  },
+  header: {
+    flexDirection: "row",
+  },
+  title: {
+    fontSize: 18,
+    fontFamily: theme.fontFamily.medium,
+    color: theme.colors.white,
+    flex: 1,
+    textAlign: 'center',
+    marginLeft: 24
+  },
+  close: {
+    color: theme.colors.white,
+  },
+  options: {
+    flexDirection: 'row',
+    gap: 16,
+    marginTop: 32
+  }
+});
