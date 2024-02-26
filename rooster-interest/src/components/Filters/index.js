@@ -2,9 +2,9 @@ import React from 'react';
 import { FlatList } from 'react-native';
 
 import { styles } from './styles';
-import Filter from '../Filter';
+import { Filter } from '../Filter';
 
-export default function Filters({ filters, selected, onChange }) {
+export function Filters({ filters, selected, onChange }) {
   return <FlatList
     data={filters}
     keyExtractor={item => item}

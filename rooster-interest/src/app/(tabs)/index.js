@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, StyleSheet } from 'react-native';
 
 import { theme } from '../../theme';
-import Filters from '../../components/Filters';
+import { Filters } from '../../components/Filters';
 import { FILTERS } from '../../utils/filters';
 
 export default function Home() {
